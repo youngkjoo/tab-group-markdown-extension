@@ -5,8 +5,10 @@ document.addEventListener('DOMContentLoaded', async () => {
   const mdUpload = document.getElementById('mdUpload');
   const diffResults = document.getElementById('diffResults');
   const syncBtn = document.getElementById('syncBtn');
+  const lblOverride = document.getElementById('lblOverride');
 
   let groups = [];
+  let isSyncExport = false;
   try {
     // 1. Fetch all groups across windows
     groups = await chrome.tabGroups.query({});
@@ -52,6 +54,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     const file = e.target.files[0];
     if (!file) {
       diffResults.innerHTML = '';
+      lblOverride.style.display = 'none';
       syncBtn.style.display = 'none';
       return;
     }
@@ -99,6 +102,7 @@ document.addEventListener('DOMContentLoaded', async () => {
       diffResults.innerHTML = '';
       if (added.length === 0 && removed.length === 0) {
         diffResults.innerHTML = '<div class="diff-empty">No changes detected. The file is completely in sync!</div>';
+        lblOverride.style.display = 'none';
         syncBtn.style.display = 'none';
       } else {
         added.forEach(item => {
@@ -127,6 +131,7 @@ document.addEventListener('DOMContentLoaded', async () => {
           div.appendChild(titleSpan);
           diffResults.appendChild(div);
         });
+        lblOverride.style.display = 'block';
         syncBtn.style.display = 'block';
       }
     };
@@ -134,6 +139,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   });
 
   syncBtn.addEventListener('click', () => {
+    isSyncExport = true;
     exportBtn.click();
   });
   // -------------------------
@@ -186,8 +192,9 @@ document.addEventListener('DOMContentLoaded', async () => {
           url: url,
           filename: `${safeName}_links.md`,
           saveAs: false,
-          conflictAction: overwrite ? 'overwrite' : 'uniquify'
+          conflictAction: (isSyncExport && overwrite) ? 'overwrite' : 'uniquify'
         });
+        isSyncExport = false; // Immediately revert fallback status
         
         if (!doCopy) {
            statusDiv.textContent = "Started Download!";

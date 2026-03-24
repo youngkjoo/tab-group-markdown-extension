@@ -16,8 +16,6 @@
       <label><input type="radio" name="exportMethod" id="radioCopy" value="copy" checked> Copy to Clipboard</label>
       <label><input type="radio" name="exportMethod" id="radioDownload" value="download"> Download .md File</label>
       <label><input type="radio" name="exportMethod" id="radioBoth" value="both"> Both</label>
-      <hr style="border:0; border-top:1px solid #e5e7eb; margin: 4px 0; width: 100%;">
-      <label><input type="checkbox" id="chkOverride" checked> Overwrite existing file</label>
     </div>
     <details id="syncSection">
       <summary>Sync & Diff against existing .md</summary>
@@ -25,6 +23,7 @@
         <label for="mdUpload" class="upload-label">Upload previous .md backup:</label>
         <input type="file" id="mdUpload" accept=".md">
         <div id="diffResults"></div>
+        <label id="lblOverride" style="display:none;"><input type="checkbox" id="chkOverride" checked> Overwrite existing file</label>
         <button id="syncBtn" style="display:none;">Sync & Export Updates</button>
       </div>
     </details>

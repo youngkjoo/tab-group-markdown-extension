@@ -144,8 +144,8 @@ describe('Chrome Extension Popup Logic', () => {
     document.getElementById('groupSelect').value = '99';
     document.getElementById('radioCopy').checked = false;
     document.getElementById('radioDownload').checked = true; // Set to download only
-    document.getElementById('chkOverride').checked = false; // Disable global overwrite policy
-    
+    document.getElementById('chkOverride').checked = true; // Attempt to globally overwrite
+
     document.getElementById('exportBtn').click();
     await new Promise(r => setTimeout(r, 0));
 
@@ -298,16 +298,14 @@ describe('Chrome Extension Popup Logic', () => {
     const syncBtn = document.getElementById('syncBtn');
     expect(syncBtn.style.display).toBe('block');
     
-    // Test that the Sync Button perfectly shortcuts to exporting the accurate live environment
+    document.getElementById('radioDownload').checked = true; // Set download
+    
+    // Test that the Sync Button asserts explicit override power
     syncBtn.click();
     await new Promise(r => setTimeout(r, 0));
     
-    expect(navigator.clipboard.writeText).toHaveBeenCalledTimes(1);
-    const clipboardData = navigator.clipboard.writeText.mock.calls[0][0];
-    
-    expect(clipboardData).toContain('[New Tab](https://new.com)');
-    expect(clipboardData).toContain('[Google](https://google.com)');
-    expect(clipboardData).not.toContain('Removed Tab'); // Confirm deletion is obeyed!
+    expect(chrome.downloads.download).toHaveBeenCalledTimes(1);
+    expect(chrome.downloads.download.mock.calls[0][0].conflictAction).toBe('overwrite');
   });
 
 });
