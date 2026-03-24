@@ -184,7 +184,8 @@ document.addEventListener('DOMContentLoaded', async () => {
         await chrome.downloads.download({
           url: url,
           filename: `${safeName}_links.md`,
-          saveAs: false
+          saveAs: false,
+          conflictAction: 'overwrite'
         });
         
         if (!doCopy) {
