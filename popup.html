@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <link rel="stylesheet" href="popup.css">
+</head>
+<body>
+  <div class="container">
+    <h2>Tab Group Exporter</h2>
+    <p class="subtitle">Export links to Markdown</p>
+    
+    <label for="groupSelect">Select Tab Group:</label>
+    <select id="groupSelect"></select>
+    
+    <div class="options">
+      <label><input type="radio" name="exportMethod" id="radioCopy" value="copy" checked> Copy to Clipboard</label>
+      <label><input type="radio" name="exportMethod" id="radioDownload" value="download"> Download .md File</label>
+      <label><input type="radio" name="exportMethod" id="radioBoth" value="both"> Both</label>
+    </div>
+    
+    <button id="exportBtn">Export Markdown</button>
+    <div id="statusBox"></div>
+  </div>
+  <script src="popup.js"></script>
+</body>
+</html>

@@ -1,0 +1,14 @@
+{
+  "name": "tab-group-markdown-tests",
+  "version": "1.0.0",
+  "description": "Comprehensive Unit Tests for the Tab Group Extension",
+  "scripts": {
+    "test": "jest popup.test.js",
+    "test:ui": "jest integration.test.js --forceExit"
+  },
+  "devDependencies": {
+    "jest": "^29.7.0",
+    "jest-environment-jsdom": "^30.3.0",
+    "puppeteer": "^24.40.0"
+  }
+}
