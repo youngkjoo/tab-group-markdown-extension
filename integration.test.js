@@ -167,7 +167,7 @@ describe('Tab Group Extension UI Integration Tests', () => {
     await page.waitForSelector('.diff-added');
     
     const removedText = await page.$eval('.diff-removed', el => el.textContent);
-    expect(removedText).toBe('- Old Outdated Tab');
+    expect(removedText).toBe('Deleted: Old Outdated Tab');
 
     // example.com implicitly creates a blank title occasionally or 'Example Domain' 
     // We just verify an addition registered at all

@@ -104,13 +104,13 @@ document.addEventListener('DOMContentLoaded', async () => {
         added.forEach(item => {
           const div = document.createElement('div');
           div.className = 'diff-added';
-          div.textContent = `+ ${item.title}`;
+          div.textContent = `New: ${item.title}`;
           diffResults.appendChild(div);
         });
         removed.forEach(item => {
           const div = document.createElement('div');
           div.className = 'diff-removed';
-          div.textContent = `- ${item.title}`;
+          div.textContent = `Deleted: ${item.title}`;
           diffResults.appendChild(div);
         });
         syncBtn.style.display = 'block';

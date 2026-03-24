@@ -284,10 +284,10 @@ describe('Chrome Extension Popup Logic', () => {
     const removedElement = diffResults.querySelector('.diff-removed');
     
     expect(addedElement).not.toBeNull();
-    expect(addedElement.textContent).toBe('+ New Tab');
+    expect(addedElement.textContent).toBe('New: New Tab');
     
     expect(removedElement).not.toBeNull();
-    expect(removedElement.textContent).toBe('- Removed Tab');
+    expect(removedElement.textContent).toBe('Deleted: Removed Tab');
 
     const syncBtn = document.getElementById('syncBtn');
     expect(syncBtn.style.display).toBe('block');
