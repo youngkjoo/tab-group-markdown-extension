@@ -249,4 +249,59 @@ describe('Chrome Extension Popup Logic', () => {
     expect(document.getElementById('statusBox').textContent).toBe('Error: Download blocked');
   });
 
+  // Test 10: Diffing Engine Upload Test
+  it('diffs an uploaded markdown file against live tabs and dynamically drives the Sync export flow', async () => {
+    const mockFileContent = `# Old Group Backup\n- [Google](https://google.com)\n- [Removed Tab](https://removed.com)\n`;
+    const file = new File([mockFileContent], 'old.md', { type: 'text/markdown' });
+
+    // Stage Live Tabs differently than backup
+    chrome.tabGroups.query.mockResolvedValue([{ id: 11, title: 'Live Group' }]);
+    chrome.tabs.query.mockImplementation(async (queryObj) => {
+      if (queryObj.groupId === 11) return [
+        { title: 'Google', url: 'https://google.com' }, // Unchanged
+        { title: 'New Tab', url: 'https://new.com' }    // Added completely new
+      ];
+      return [];
+    });
+
+    document.dispatchEvent(new Event('DOMContentLoaded'));
+    await new Promise(r => setTimeout(r, 0));
+
+    document.getElementById('groupSelect').value = '11';
+
+    const fileInput = document.getElementById('mdUpload');
+    
+    // Force JSDOM File selection hack
+    Object.defineProperty(fileInput, 'files', { value: [file] });
+    fileInput.dispatchEvent(new Event('change'));
+
+    // FileReader is inherently asynchronous in JS, await processing microtask
+    await new Promise(r => setTimeout(r, 50));
+
+    const diffResults = document.getElementById('diffResults');
+    
+    const addedElement = diffResults.querySelector('.diff-added');
+    const removedElement = diffResults.querySelector('.diff-removed');
+    
+    expect(addedElement).not.toBeNull();
+    expect(addedElement.textContent).toBe('+ New Tab');
+    
+    expect(removedElement).not.toBeNull();
+    expect(removedElement.textContent).toBe('- Removed Tab');
+
+    const syncBtn = document.getElementById('syncBtn');
+    expect(syncBtn.style.display).toBe('block');
+    
+    // Test that the Sync Button perfectly shortcuts to exporting the accurate live environment
+    syncBtn.click();
+    await new Promise(r => setTimeout(r, 0));
+    
+    expect(navigator.clipboard.writeText).toHaveBeenCalledTimes(1);
+    const clipboardData = navigator.clipboard.writeText.mock.calls[0][0];
+    
+    expect(clipboardData).toContain('[New Tab](https://new.com)');
+    expect(clipboardData).toContain('[Google](https://google.com)');
+    expect(clipboardData).not.toContain('Removed Tab'); // Confirm deletion is obeyed!
+  });
+
 });

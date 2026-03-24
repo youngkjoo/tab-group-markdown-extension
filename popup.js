@@ -2,6 +2,9 @@ document.addEventListener('DOMContentLoaded', async () => {
   const groupSelect = document.getElementById('groupSelect');
   const exportBtn = document.getElementById('exportBtn');
   const statusDiv = document.getElementById('statusBox');
+  const mdUpload = document.getElementById('mdUpload');
+  const diffResults = document.getElementById('diffResults');
+  const syncBtn = document.getElementById('syncBtn');
 
   let groups = [];
   try {
@@ -43,6 +46,83 @@ document.addEventListener('DOMContentLoaded', async () => {
   } catch (err) {
     statusDiv.textContent = "Error fetching groups: " + err.message;
   }
+
+  // --- Sync & Diff Logic ---
+  mdUpload.addEventListener('change', async (e) => {
+    const file = e.target.files[0];
+    if (!file) {
+      diffResults.innerHTML = '';
+      syncBtn.style.display = 'none';
+      return;
+    }
+
+    const selectedOption = groupSelect.options[groupSelect.selectedIndex];
+    if (!selectedOption || !selectedOption.value) {
+       diffResults.innerHTML = '<div class="diff-empty">Please select a Tab Group first.</div>';
+       return;
+    }
+    const groupId = parseInt(selectedOption.value);
+
+    const reader = new FileReader();
+    reader.onload = async (evt) => {
+      const text = evt.target.result;
+      
+      const regex = /-\s+\[(.*?)\]\((.*?)\)/g;
+      const previousUrls = new Map();
+      let match;
+      while ((match = regex.exec(text)) !== null) {
+        previousUrls.set(match[2], match[1]); // Map URL -> Title
+      }
+
+      let liveTabs = [];
+      try {
+        liveTabs = await chrome.tabs.query({ groupId: groupId });
+      } catch (err) {
+        diffResults.innerHTML = `<div class="diff-removed">Error grabbing live tabs: ${err.message}</div>`;
+        return;
+      }
+
+      const liveUrls = new Map();
+      liveTabs.forEach(t => liveUrls.set(t.url, t.title));
+
+      const added = [];
+      const removed = [];
+
+      liveUrls.forEach((title, url) => {
+        if (!previousUrls.has(url)) added.push({title, url});
+      });
+
+      previousUrls.forEach((title, url) => {
+        if (!liveUrls.has(url)) removed.push({title, url});
+      });
+
+      diffResults.innerHTML = '';
+      if (added.length === 0 && removed.length === 0) {
+        diffResults.innerHTML = '<div class="diff-empty">No changes detected. The file is completely in sync!</div>';
+        syncBtn.style.display = 'none';
+      } else {
+        added.forEach(item => {
+          const div = document.createElement('div');
+          div.className = 'diff-added';
+          div.textContent = `+ ${item.title}`;
+          diffResults.appendChild(div);
+        });
+        removed.forEach(item => {
+          const div = document.createElement('div');
+          div.className = 'diff-removed';
+          div.textContent = `- ${item.title}`;
+          diffResults.appendChild(div);
+        });
+        syncBtn.style.display = 'block';
+      }
+    };
+    reader.readAsText(file);
+  });
+
+  syncBtn.addEventListener('click', () => {
+    exportBtn.click();
+  });
+  // -------------------------
 
   exportBtn.addEventListener('click', async () => {
     const selectedOption = groupSelect.options[groupSelect.selectedIndex];

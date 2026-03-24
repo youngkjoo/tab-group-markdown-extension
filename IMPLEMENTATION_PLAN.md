@@ -62,3 +62,24 @@ A comprehensive Puppeteer test suite that controls a real browser. To accurately
 
 ### Verification Plan
 - **Automated Verification:** Running `npm run test:ui` executes the full Puppeteer matrix. It launches a real Chrome instance, organically creates the tab groups via Chrome APIs, and asserts the popup HTML behaves exactly as a user would experience it.
+
+---
+
+## Part 3: Markdown Sync & Diffing Feature
+Enhancing the extension to allow users to compare an exported `.md` file with the live realistic state of a Tab Group, visually diffing additions and removals, and generating a synchronized explicit `.md` file organically.
+
+### Proposed Architecture
+
+#### [MODIFY] popup.html
+- Add an expandable file `<input>` toggle container explicitly for supplying previous `.md` backups.
+- Render dynamic list items formatted with green `+` indicators for additions and red `-` indicators for removals.
+
+#### [MODIFY] popup.js
+- Implement secure file reading capability using Chrome's native HTML5 `FileReader`.
+- Parse the Markdown file utilizing standard regex `/\[(.*?)\]\((.*?)\)/g` to extract Tab URLs reliably.
+- Construct the Sync Algorithm analyzing arrays of `LiveURLs` vs `PreviousURLs` mapped strictly by their active HTTP addresses, ensuring accurate instantaneous diffs.
+- Provide a Sync Export button utilizing the same core blob/clipboard architecture for generating the fresh markup snippet.
+
+#### [MODIFY] Tests
+- Comprehensive unit testing over isolated string regex parsing logic.
+- Headless Puppeteer automation injecting artificial mock `.md` files to explicitly assert correct graphical HTML diff rendering across the DOM.

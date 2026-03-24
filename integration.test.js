@@ -143,4 +143,40 @@ describe('Tab Group Extension UI Integration Tests', () => {
     await page.close();
   });
 
+  it('Sync Mode: Safely uploads a file & visibly diffs Chrome tab drift', async () => {
+    const fs = require('fs');
+    const mockFilePath = path.join(__dirname, 'mock_diff.md');
+    fs.writeFileSync(mockFilePath, '- [Old Outdated Tab](https://outdated.com)');
+
+    // Stage Live active browser group lacking the outdated tab and having a new one
+    await bgEval(async () => {
+      const tab = await chrome.tabs.create({url: 'https://example.com'});
+      const groupId = await chrome.tabs.group({tabIds: tab.id});
+      await chrome.tabGroups.update(groupId, {title: 'Diff Test'});
+    });
+
+    const page = await browser.newPage();
+    await page.goto(`chrome-extension://${extensionId}/popup.html`);
+
+    // Automate generic file upload via Puppeteer element handler
+    const uploadElement = await page.$('#mdUpload');
+    await uploadElement.uploadFile(mockFilePath);
+
+    // Wait for Javascript FileReader to process the blob and inject DOM
+    await page.waitForSelector('.diff-removed');
+    await page.waitForSelector('.diff-added');
+    
+    const removedText = await page.$eval('.diff-removed', el => el.textContent);
+    expect(removedText).toBe('- Old Outdated Tab');
+
+    // example.com implicitly creates a blank title occasionally or 'Example Domain' 
+    // We just verify an addition registered at all
+    const addedNodesCount = await page.$$eval('.diff-added', nodes => nodes.length);
+    expect(addedNodesCount).toBeGreaterThan(0);
+
+    // Cleanup securely!
+    await page.close();
+    fs.unlinkSync(mockFilePath);
+  });
+
 });
