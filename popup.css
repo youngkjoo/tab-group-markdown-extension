@@ -145,11 +145,11 @@ input[type="file"] {
 .diff-row {
   margin-bottom: 6px;
   display: flex;
-  gap: 4px;
+  gap: 8px;
 }
-.diff-added-tag { color: #10b981; font-weight: 600; white-space: nowrap; }
-.diff-removed-tag { color: #ef4444; font-weight: 600; white-space: nowrap; }
-.diff-title { color: #111827; word-break: break-word; }
+.diff-added-tag { color: #10b981; font-weight: 600; flex: 0 0 85px; }
+.diff-removed-tag { color: #ef4444; font-weight: 600; flex: 0 0 85px; }
+.diff-title { color: #111827; word-break: break-word; flex: 1; min-width: 0; }
 .diff-empty { color: #6b7280; font-style: italic; }
 
 #syncBtn {
