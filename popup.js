@@ -181,11 +181,12 @@ document.addEventListener('DOMContentLoaded', async () => {
         const blob = new Blob([md], { type: 'text/markdown' });
         const url = URL.createObjectURL(blob);
         
+        const overwrite = document.getElementById('chkOverride').checked;
         await chrome.downloads.download({
           url: url,
           filename: `${safeName}_links.md`,
           saveAs: false,
-          conflictAction: 'overwrite'
+          conflictAction: overwrite ? 'overwrite' : 'uniquify'
         });
         
         if (!doCopy) {

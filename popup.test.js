@@ -144,6 +144,7 @@ describe('Chrome Extension Popup Logic', () => {
     document.getElementById('groupSelect').value = '99';
     document.getElementById('radioCopy').checked = false;
     document.getElementById('radioDownload').checked = true; // Set to download only
+    document.getElementById('chkOverride').checked = false; // Disable global overwrite policy
     
     document.getElementById('exportBtn').click();
     await new Promise(r => setTimeout(r, 0));
@@ -154,6 +155,7 @@ describe('Chrome Extension Popup Logic', () => {
     const downloadArgs = chrome.downloads.download.mock.calls[0][0];
     expect(downloadArgs.filename).toBe('test_group_links.md');
     expect(downloadArgs.url).toBe('blob:mock-url');
+    expect(downloadArgs.conflictAction).toBe('uniquify');
   });
 
   // Test 5: No Tab Groups are open
