@@ -16,7 +16,9 @@
       <label><input type="radio" name="exportMethod" id="radioCopy" value="copy" checked> Copy to Clipboard</label>
       <label><input type="radio" name="exportMethod" id="radioDownload" value="download"> Download .md File</label>
       <label><input type="radio" name="exportMethod" id="radioBoth" value="both"> Both</label>
+      <button id="exportBtn">Export Markdown</button>
     </div>
+    
     <details id="syncSection">
       <summary>Sync & Diff against existing .md</summary>
       <div class="sync-container">
@@ -27,8 +29,7 @@
         <button id="syncBtn" style="display:none;">Sync & Export Updates</button>
       </div>
     </details>
-    
-    <button id="exportBtn">Export Markdown</button>
+
     <div id="statusBox"></div>
   </div>
   <script src="popup.js"></script>
