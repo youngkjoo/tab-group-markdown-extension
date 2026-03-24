@@ -71,8 +71,11 @@ Enhancing the extension to allow users to compare an exported `.md` file with th
 ### Proposed Architecture
 
 #### [MODIFY] popup.html
-- Add an expandable file `<input>` toggle container explicitly for supplying previous `.md` backups.
-- Render dynamic list items formatted with green `+` indicators for additions and red `-` indicators for removals.
+- Organize the standard export button safely inside `.options`.
+- Add an expandable `<details>` container completely isolated beneath the main application box.
+- Inject `<input type="file">` correctly identifying `.md` payloads.
+- Inject an override `<input type="checkbox">` toggling explicitly inside the Sync block.
+- Render dynamic table-aligned Flexlist items structurally separated via nested `span` containers formatting visual emojis (`✨ New:`, `🗑️ Removed:`).
 
 #### [MODIFY] popup.js
 - Implement secure file reading capability using Chrome's native HTML5 `FileReader`.

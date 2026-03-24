@@ -36,9 +36,10 @@ The output should be clean, standard Markdown. Example:
 - **Copy to Clipboard:** Copies the formatted Markdown to the system clipboard. The extension must provide visual feedback (e.g., button changes to "Copied!") in the popup upon success.
 
 ### 3.5 Sync & Diff Existing Files
-- **Drift Detection:** Allows users to systematically diff the live active Chrome Tab Group state against any previously exported `.md` file. By uploading an old file, the extension natively parses its contents and compares it to live reality.
-- **Diff UI:** Visually presents exactly which tabs were strictly **Added** (Green `+`) or **Removed** (Red `-`).
-- **One-Click Sync:** Seamlessly syncs the active Chrome state and eliminates outdated removed tabs, organically generating an updated Markdown export without manual editing.
+- **Drift Detection:** Allows users to systematically diff the live active Chrome Tab Group state against any previously exported `.md` file. By uploading an old file inside the `<details>` accordion block, the extension natively parses its contents and compares it to live reality.
+- **Diff UI Grid:** Visually presents exactly which tabs were strictly **Added** (`✨ New:`) or **Removed** (`🗑️ Removed:`). The output dynamically generates inside a clean 2-column tabular flex structure aligning the URLs effortlessly for readability.
+- **One-Click Sync:** Seamlessly syncs the active Chrome state and eliminates outdated tabs. 
+- **Intelligent Overwriting:** Features a default-checked **Overwrite existing file** box explicitly restricted to the Sync workflow. This securely commands Chromium to directly overwrite the exact target file via `conflictAction`, overriding the typical `.md (1)` fallback behavior exclusively during synchronizations.
 
 ## 4. Edge Cases & Constraints
 - **Unnamed Tab Groups:** Though uncommon, the fallback naming convention is `Unnamed_Group_[YYYY-MM-DD]`.
