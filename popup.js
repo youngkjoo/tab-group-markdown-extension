@@ -103,14 +103,28 @@ document.addEventListener('DOMContentLoaded', async () => {
       } else {
         added.forEach(item => {
           const div = document.createElement('div');
-          div.className = 'diff-added';
-          div.textContent = `✨ New: ${item.title}`;
+          div.className = 'diff-row';
+          const tagSpan = document.createElement('span');
+          tagSpan.className = 'diff-added-tag';
+          tagSpan.textContent = '✨ New: ';
+          const titleSpan = document.createElement('span');
+          titleSpan.className = 'diff-title';
+          titleSpan.textContent = item.title;
+          div.appendChild(tagSpan);
+          div.appendChild(titleSpan);
           diffResults.appendChild(div);
         });
         removed.forEach(item => {
           const div = document.createElement('div');
-          div.className = 'diff-removed';
-          div.textContent = `🗑️ Removed: ${item.title}`;
+          div.className = 'diff-row';
+          const tagSpan = document.createElement('span');
+          tagSpan.className = 'diff-removed-tag';
+          tagSpan.textContent = '🗑️ Removed: ';
+          const titleSpan = document.createElement('span');
+          titleSpan.className = 'diff-title';
+          titleSpan.textContent = item.title;
+          div.appendChild(tagSpan);
+          div.appendChild(titleSpan);
           diffResults.appendChild(div);
         });
         syncBtn.style.display = 'block';

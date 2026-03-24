@@ -163,15 +163,15 @@ describe('Tab Group Extension UI Integration Tests', () => {
     await uploadElement.uploadFile(mockFilePath);
 
     // Wait for Javascript FileReader to process the blob and inject DOM
-    await page.waitForSelector('.diff-removed');
-    await page.waitForSelector('.diff-added');
+    await page.waitForSelector('.diff-removed-tag');
+    await page.waitForSelector('.diff-added-tag');
     
-    const removedText = await page.$eval('.diff-removed', el => el.textContent);
+    const removedText = await page.$$eval('.diff-row', rows => rows.find(r => r.textContent.includes('🗑️ Removed')).textContent);
     expect(removedText).toBe('🗑️ Removed: Old Outdated Tab');
 
     // example.com implicitly creates a blank title occasionally or 'Example Domain' 
     // We just verify an addition registered at all
-    const addedNodesCount = await page.$$eval('.diff-added', nodes => nodes.length);
+    const addedNodesCount = await page.$$eval('.diff-added-tag', nodes => nodes.length);
     expect(addedNodesCount).toBeGreaterThan(0);
 
     // Cleanup securely!

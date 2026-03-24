@@ -280,14 +280,18 @@ describe('Chrome Extension Popup Logic', () => {
 
     const diffResults = document.getElementById('diffResults');
     
-    const addedElement = diffResults.querySelector('.diff-added');
-    const removedElement = diffResults.querySelector('.diff-removed');
+    const addedElement = diffResults.querySelector('.diff-added-tag');
+    const removedElement = diffResults.querySelector('.diff-removed-tag');
     
     expect(addedElement).not.toBeNull();
-    expect(addedElement.textContent).toBe('✨ New: New Tab');
+    expect(addedElement.textContent).toBe('✨ New: ');
     
     expect(removedElement).not.toBeNull();
-    expect(removedElement.textContent).toBe('🗑️ Removed: Removed Tab');
+    expect(removedElement.textContent).toBe('🗑️ Removed: ');
+
+    const diffRows = diffResults.querySelectorAll('.diff-row');
+    expect(diffRows[0].textContent).toBe('✨ New: New Tab');
+    expect(diffRows[1].textContent).toBe('🗑️ Removed: Removed Tab');
 
     const syncBtn = document.getElementById('syncBtn');
     expect(syncBtn.style.display).toBe('block');
